@@ -1,0 +1,43 @@
+<h2>Compiling GraphicsMagick and GMDelegates</h2>
+
+The directory structure has to be:
+
+<pre>
+./src/GraphicsMagick-VERSION/    <- GraphicsMagick top directory
+./src/GMDelegates/               <- Some delegates: jpeg + png + tiff
+./src/GMDelegates/jpeg-9b/       <- jpeg lib
+./src/GMDelegates/libpng-1.6.34  <- png lib
+./src/GMDelegates/tiff-4.0.8     <- tiff lib
+</pre>
+
+The main script to run is:
+<pre>./build.sh VERSION|clean</pre> where VERSION is the version of GraphicsMagick
+you want to compile (e.g., 1.3.26), if 'clean' is passed, the script will
+clean all the log files and the directories it created.
+
+Upon successful compilation a folder called "IMPORT_ME" will be created from
+where you start the script: you can import it into your XCode project.
+
+The rest of the scripts are invoked by all.sh and offer the following:
+<pre>./env.sh</pre> sets up environment variables used by the other scripts.
+This is most probably the script you want to modify to suit your needs (e.g.,
+set up which architectures will be compiles, verbosity level, ...)
+<pre>./flags.sh</pre> saves, sets up and restores compiler-related values
+<pre>./utils.sh</pre> offers some functions used in the other scripts
+<pre>./compile_*.sh</pre> are the scripts used to compile the respective component
+
+<h2>XCode project settings</h2>
+
+After including everything into XCode please also make sure to have these settings (Build tab of the project information):
+
+* Other Linker Flags: -lMagickCore -lMagickWand -lz -lbz2 -ljpeg -lpng
+* Header Search Paths: $(SRCROOT) - make it Recursive
+* Library Search Paths: $(SRCROOT) - make it Recursive
+
+On the lower left click on the small-wheel and select: Add User-Defined Setting
+* Key: OTHER_CFLAGS
+* Value: -Dmacintosh=1
+
+In Link Binary with Libraries under Build Phases, you may also need to add:
+* libxml2.dylib
+
